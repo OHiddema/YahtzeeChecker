@@ -29,16 +29,20 @@ public class Main {
             return;
         }
 
+        // create a list of integers from the input string
         List<Integer> diceList = diceRoll.chars()
                 .mapToObj(c -> String.valueOf((char) c))
                 .map(Integer::parseInt)
                 .toList();
 
+        // create a sorted string of integers from the list
         String diceRollAsString = diceList.stream()
                 .sorted(Integer::compareTo)
                 .map(Object::toString)
                 .collect(Collectors.joining(""));
 
+        // create a sorted string of integers from the list, remove duplicates
+        // makes checking isSmallStreet much easier
         String diceRollDistinctAsString = diceList.stream()
                 .distinct()
                 .sorted(Integer::compareTo)
@@ -48,7 +52,11 @@ public class Main {
         isYahtzee = diceRollAsString.matches("(.)\\1{4}");
         isFourOfAKind = diceRollAsString.matches(".*(.)\\1{3}.*");
         isThreeOfAKind = diceRollAsString.matches(".*(.)\\1{2}.*");
+
+        // first part of regex matches 2 the same followed by 3 the same
+        // second part of regex matches 3 the same followed by 2 the same
         isFullHouse = diceRollAsString.matches("(.)\\1((?!\\1).)\\2{2}|(.)\\3{2}((?!\\3).)\\4");
+
         isLargeStreet = diceRollAsString.matches("12345|23456");
         isSmallStreet = diceRollDistinctAsString.matches("1234.?|.?2345.?|.?3456");
 
