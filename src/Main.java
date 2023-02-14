@@ -1,6 +1,4 @@
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class Main {
 
@@ -29,36 +27,34 @@ public class Main {
             return;
         }
 
-        // create a list of integers from the input string
-        List<Integer> diceList = diceRoll.chars()
-                .mapToObj(c -> String.valueOf((char) c))
-                .map(Integer::parseInt)
-                .toList();
+        int maxCount = 0;               // highest occurence of the same number
+        int maxLength = 0;              // the longest street
+        int length = 0;
+        int cardinality = 0;            // counts the number of different occurences
+        int[] histogram = new int[7];   // counts the number of occurences of 1..6
 
-        // create a sorted string of integers from the list
-        String diceRollAsString = diceList.stream()
-                .sorted(Integer::compareTo)
-                .map(Object::toString)
-                .collect(Collectors.joining(""));
+        for (int i = 0; i < diceRoll.length(); i++) {
+            int value = Character.getNumericValue(diceRoll.charAt(i));
+            histogram[value]++;
+        }
 
-        // create a sorted string of integers from the list, remove duplicates
-        // makes checking isSmallStreet much easier
-        String diceRollDistinctAsString = diceList.stream()
-                .distinct()
-                .sorted(Integer::compareTo)
-                .map(Object::toString)
-                .collect(Collectors.joining(""));
+        for (int i = 1; i <= 6 ; i++) {
+            if (histogram[i] > 0) {
+                cardinality++;
+                length++;
+                maxLength = Math.max(length, maxLength);
+                maxCount = Math.max(histogram[i], maxCount);
+            } else {
+                length = 0;
+            }
+        }
 
-        isYahtzee = diceRollAsString.matches("(.)\\1{4}");
-        isFourOfAKind = diceRollAsString.matches(".*(.)\\1{3}.*");
-        isThreeOfAKind = diceRollAsString.matches(".*(.)\\1{2}.*");
-
-        // first part of regex matches 2 the same followed by 3 the same
-        // second part of regex matches 3 the same followed by 2 the same
-        isFullHouse = diceRollAsString.matches("(.)\\1((?!\\1).)\\2{2}|(.)\\3{2}((?!\\3).)\\4");
-
-        isLargeStreet = diceRollAsString.matches("12345|23456");
-        isSmallStreet = diceRollDistinctAsString.matches("1234.?|.?2345.?|.?3456");
+        isYahtzee = maxCount == 5;
+        isFourOfAKind = maxCount >=4;
+        isThreeOfAKind = maxCount >= 3;
+        isFullHouse = maxCount == 3 && cardinality == 2;
+        isLargeStreet = maxLength == 5;
+        isSmallStreet = maxLength >=4;
 
         System.out.println("Yahtzee:       " + isYahtzee);
         System.out.println("4 of a kind:   " + isFourOfAKind);
