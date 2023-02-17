@@ -23,12 +23,12 @@ public class Main {
 
     private static void evaluateDiceRoll(String diceRoll) {
         boolean isYahtzee, isFourOfAKind, isThreeOfAKind, isFullHouse, isLargeStreet, isSmallStreet;
-        int maxCount = 0;               // highest occurence of the same number
+        int maxCount = 0;               // highest occurrence of the same number
         int maxLength = 0;              // the longest street
         int length = 0;
-        int cardinality = 0;            // counts the number of different occurences
+        int cardinality = 0;            // counts the number of different occurrences
 
-        // histogram[1]..[6] holds the number of occurences of 1..6
+        // histogram[1]..[6] holds the number of occurrences of 1..6
         // this means that histogram[0] is not used!
         int[] histogram = new int[7];
 
