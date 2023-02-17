@@ -11,34 +11,33 @@ public class Main {
             if (diceRoll.equals("exit")) {
                 System.out.println("Bye!");
                 return;
-            } else {
-                evaluateDiceRoll(diceRoll);
             }
+            // check if the input is valid: 5 characters in the range [1..6]
+            if (!diceRoll.matches("[1-6]{5}")) {
+                System.out.println("Invalid input!");
+                continue;
+            }
+            evaluateDiceRoll(diceRoll);
         } while (true);
     }
 
     private static void evaluateDiceRoll(String diceRoll) {
-        boolean isYahtzee, isFourOfAKind, isThreeOfAKind,
-                isFullHouse, isLargeStreet, isSmallStreet;
-
-        // check if the input is valid: 5 characters in the range [1..6]
-        if (!diceRoll.matches("[1-6]{5}")) {
-            System.out.println("Invalid input!");
-            return;
-        }
-
+        boolean isYahtzee, isFourOfAKind, isThreeOfAKind, isFullHouse, isLargeStreet, isSmallStreet;
         int maxCount = 0;               // highest occurence of the same number
         int maxLength = 0;              // the longest street
         int length = 0;
         int cardinality = 0;            // counts the number of different occurences
-        int[] histogram = new int[7];   // counts the number of occurences of 1..6
+
+        // histogram[1]..[6] holds the number of occurences of 1..6
+        // this means that histogram[0] is not used!
+        int[] histogram = new int[7];
 
         for (int i = 0; i < diceRoll.length(); i++) {
             int value = Character.getNumericValue(diceRoll.charAt(i));
             histogram[value]++;
         }
 
-        for (int i = 1; i <= 6 ; i++) {
+        for (int i = 1; i <= 6; i++) {
             if (histogram[i] > 0) {
                 cardinality++;
                 length++;
@@ -50,11 +49,11 @@ public class Main {
         }
 
         isYahtzee = maxCount == 5;
-        isFourOfAKind = maxCount >=4;
+        isFourOfAKind = maxCount >= 4;
         isThreeOfAKind = maxCount >= 3;
         isFullHouse = maxCount == 3 && cardinality == 2;
         isLargeStreet = maxLength == 5;
-        isSmallStreet = maxLength >=4;
+        isSmallStreet = maxLength >= 4;
 
         System.out.println("Yahtzee:       " + isYahtzee);
         System.out.println("4 of a kind:   " + isFourOfAKind);
